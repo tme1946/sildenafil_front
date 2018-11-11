@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class ReviewController {
     @Autowired
     ReviewService reviewService;
-    Long TIME = System.currentTimeMillis()/1000;
+    private Long TIME = System.currentTimeMillis();
     /**
      *根据学生id获取评论列表（论坛）
      * @param [page, size, student_id]
@@ -59,8 +59,10 @@ public class ReviewController {
             return ResponseBo.error("type or typeId is null");}
         review.setCreateAt(TIME);
         if(reviewService.save(review)) {
+            log.info("create student success");
             return ResponseBo.ok();
         }else {
+            log.error("addReview error");
             return ResponseBo.error("create error");
         }
 
@@ -100,6 +102,7 @@ public class ReviewController {
             log.info("result for deleteReviewId is : reviewId={}",reviewId);
             return ResponseBo.ok();
         }else{
+            log.error("deleteReview error");
             return ResponseBo.error("delete error");
         }
     }
