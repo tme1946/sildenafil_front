@@ -14,4 +14,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface ReviewService extends IService<Review> {
     IPage<Review> reviewByStudent(Integer page, Integer size, Long studentId);
+    IPage reviewByType(Integer page,Integer size,Integer type,Long typeId);
 }
