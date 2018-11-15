@@ -27,7 +27,7 @@ public class ReviewController {
     ReviewService reviewService;
     private Long TIME = System.currentTimeMillis();
     /**
-     *根据学生id获取评论列表（论坛）
+     *根据学生id获取评论列表（学生证/我的回复）
      * @param [page, size, student_id]
      * @return  com.jnshu.sildenafil.common.domain.ResponseBo
      */
