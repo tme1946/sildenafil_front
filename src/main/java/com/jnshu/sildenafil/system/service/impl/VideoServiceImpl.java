@@ -46,7 +46,7 @@ public class VideoServiceImpl extends ServiceImpl<VideoDao, Video> implements Vi
     }
 
     /**
-     * 前台查询视频列表（分页）
+     * 前台查询视频列表（card分页）
      * @param page 第几页
      * @param size 每页条数
      * @param grade 年级
@@ -62,8 +62,10 @@ public class VideoServiceImpl extends ServiceImpl<VideoDao, Video> implements Vi
         IPage<Video> findPage = new MyPage<Video>(page, size).setDesc("update_at");
         QueryWrapper<Video> videoQueryWrapper = new QueryWrapper<>();
         videoQueryWrapper
-                .select("id","like_amount","collection_amount","digest","url",
-                        "title","time_length","update_at","teacher_id")
+                .select("id","teacher_id","url","grade","subject","body","title","time_length",
+                        "status","type","update_at","digest","like_amount","collection_amount")
+                .eq("type", 0)
+                .eq("status", 1)
                 .eq(grade != null, "grade", grade)
                 .eq(subject != null, "subject", subject);
         IPage videoIPage = videoDao.selectPage(findPage, videoQueryWrapper);
@@ -77,13 +79,14 @@ public class VideoServiceImpl extends ServiceImpl<VideoDao, Video> implements Vi
     }
 
     /**
-     * 前台通过id获取视频
+     * 前台id查询视频详情
      * @param videoId 视频id
+     * @param studentId 学生id
      * @return 查询到的视频详情
      */
     @Override
-    public Video getVideoById(Long videoId) {
-        log.info("args for saveVideo is: {}", videoId);
+    public Video getVideoById(Long videoId, Long studentId) {
+        log.info("args for saveVideo is:videoId={}, studentId={}", videoId, studentId);
         if (videoId != null) {
             Video video = videoDao.selectById(videoId);
             log.info("result of getVideoById is: {}", video);
@@ -138,13 +141,25 @@ public class VideoServiceImpl extends ServiceImpl<VideoDao, Video> implements Vi
      * @return Banner视频List
      */
     @Override
-    public List getBannerList() {
+    public IPage getBannerList(Integer page, Integer size) {
+        log.info("args for getFrontPageList is : page={}&size={}",page,size);
+        //调整page和size默认值--
+        page= null==page||page<=1? 1 : page;
+        size= null==size||size<=1||size>20 ? 10 : size;
+        IPage<Video> getBannerPage=new MyPage<Video>(page,size).setDesc("update_at");
         QueryWrapper<Video> videoQueryWrapper = new QueryWrapper<>();
-        videoQueryWrapper.eq("type", 1);
-        List<Video> videoList = videoDao.selectList(videoQueryWrapper);
-        log.info("result for getBannerList success; result detail: videoList={}", videoList);
-        return videoList;
+        videoQueryWrapper
+                .select("id","type","cover","teacher_id","title","digest","url",
+                        "body","like_amount","collection_amount","update_at","status")
+                .eq("type", 1)
+                .eq("status", 1);
+        IPage<Video> videoBannerList = videoDao.selectPage(getBannerPage,videoQueryWrapper);
+        if (videoBannerList.getRecords().size() > 0) {
+            log.info("result for getBannerList success; videoList size is : ", videoBannerList.getRecords().size());
+            return videoBannerList;
+        } else {
+            log.error("result for getBannerList error : list is null");
+            return null;
+        }
     }
-
-
 }

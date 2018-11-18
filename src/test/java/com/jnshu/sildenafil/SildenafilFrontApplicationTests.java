@@ -19,6 +19,7 @@ public class SildenafilFrontApplicationTests {
     private VideoService videoService;
     @Test
     public void videoTest() {
-        videoService.getPage(1,5,4,null).getRecords().forEach(System.out::println);
+        videoService.getBannerList(1,7).getRecords().forEach(System.out::println);
+//        videoService.getPage(1,5,4,null).getRecords().forEach(System.out::println);
     }
 }
