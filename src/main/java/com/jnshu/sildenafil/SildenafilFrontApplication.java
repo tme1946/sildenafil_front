@@ -11,5 +11,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class SildenafilFrontApplication {
     public static void main(String[] args) {
         SpringApplication.run(SildenafilFrontApplication.class, args);
+        System.out.println("***** spring boot sildenafil front start success *****");
     }
 }
