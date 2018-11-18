@@ -1,3 +1,5 @@
+server:
+  port: 20660
 spring:
   #未使用redis，配为none
   session:
