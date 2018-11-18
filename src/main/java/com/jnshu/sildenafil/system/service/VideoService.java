@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.jnshu.sildenafil.system.domain.Video;
 import com.baomidou.mybatisplus.extension.service.IService;
 
-import java.util.List;
 
 /**
  * <p>
@@ -30,9 +29,10 @@ public interface VideoService extends IService<Video> {
     /**
      * 前台查询视频详情
      * @param videoId 视频id
+     * @param studentId 学生id
      * @return 查询到的视频详情
      */
-    Video getVideoById(Long videoId);
+    Video getVideoById(Long videoId, Long studentId);
 
     /**
      * 前台增加点赞数
@@ -50,8 +50,10 @@ public interface VideoService extends IService<Video> {
 
     /**
      * 前台Banner视频列表
+     * @param page 第几页
+     * @param size 每页条数
      * @return Banner视频List
      */
-    List getBannerList();
+    IPage getBannerList(Integer page, Integer size);
 
 }
