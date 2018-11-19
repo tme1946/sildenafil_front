@@ -88,6 +88,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
 
     /**前台根据文章id查询文章信息
      * @param articleId 文章id
+     * @exception ServiceException 自定异常,参数错误
      * @return 对应文章
      */
     @Override

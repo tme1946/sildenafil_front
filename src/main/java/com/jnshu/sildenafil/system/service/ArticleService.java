@@ -32,6 +32,7 @@ public interface ArticleService extends IService<Article> {
 
     /**前台根据文章id查询文章信息
      * @param articleId 文章id
+     * @throws ServiceException 自定义异常，参数错误
      * @return 对应文章
      */
     Article getArticleById(Long articleId) throws ServiceException;
