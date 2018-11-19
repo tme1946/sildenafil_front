@@ -98,7 +98,8 @@ public class StuentController {
     }
     /**
      * 发送验证码(type:0,手机/1,邮箱）
-     * @param [account][type]
+     * @param account
+     * @param type
      * @return
      */
     @ResponseBody
