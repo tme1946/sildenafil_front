@@ -6,6 +6,8 @@ import com.jnshu.sildenafil.common.domain.ResponseBo;
 import com.jnshu.sildenafil.system.domain.Article;
 import com.jnshu.sildenafil.system.service.ArticleService;
 import com.jnshu.sildenafil.system.service.CollectionAssetService;
+import com.jnshu.sildenafil.system.service.LikeAssetService;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,7 +29,12 @@ public class ArticleController {
     @Autowired
     private ArticleService articleService;
     @Autowired
+    private LikeAssetService likeAssetService;
+    @Autowired
     private CollectionAssetService collectionAssetService;
+
+    private CollectionAssetService collectionAssetService;
+
     /**前台分页查询banner文章信息
      * @param page 页码
      * @param size 每页数量
@@ -60,16 +67,62 @@ public class ArticleController {
         return ResponseBo.error("结果异常");
     }
 
+    /**根据文章id和studentId查询文章详情
+     * @param articleId 文章id
+     * @param studentId 学生id
+     * @return 文章列表
+     */
+    @GetMapping(value = "/a/u/front/article")
+    public ResponseBo getArticle(Long articleId,Long studentId) throws Exception{
+        log.info("args for getArticle is : articleId={}&studentId={}",articleId,studentId);
+        Article article=articleService.getArticleById(articleId);
+        if(null!=article){
+            //查询点赞收藏状态
+            int collectionStatus=collectionAssetService.selectCollection(0,articleId,studentId);
+            int likeStatus=likeAssetService.selectLike(0,articleId,studentId);
+            return ResponseBo.ok()
+                    .put("article",article)
+                    .put("likeStatus",likeStatus)
+                    .put("collectionStatus",collectionStatus);
+        }
+        log.error("结果为空");
+        return ResponseBo.error("结果异常");
+    }
+
     /**根据文章id对文章点赞
      * @param articleId 文章id
+     * @param studentId 学生id
      * @return 对应文章
      */
     @PostMapping(value = "/a/u/front/article/like")
-    public ResponseBo getArticleById(Long articleId) throws Exception {
-        log.info("args for getArticleById : articleId=[{}]",articleId);
-        Article article=articleService.getArticleById(articleId);
-        if(null!=article){
+    public ResponseBo articleLike(Long articleId,Long studentId) throws Exception {
+        log.info("args for insertLike is : typeId={}&studentId={}&",articleId,studentId);
+        Long likeId=likeAssetService.insertLike(0,articleId,studentId);
+        if(null!=likeId){
             return ResponseBo.ok();
+        }
+        log.error("结果为null");
+        return ResponseBo.error("结果异常");
+    }
+
+    /**前台对文章进行收藏状态改变
+     * @param articleId 文章id
+     * @param studentId 学生id
+     * @return 返回收藏的结果
+     */
+    @PutMapping(value = "/a/u/front/article/collection")
+    public ResponseBo articleCollection(Long articleId,Long studentId,Integer status) throws Exception {
+        log.info("args for insertCollection is :articleId={}&studentId={}&",articleId,studentId);
+        Long typeId2;
+        if(null!=status && 1==status) {
+            //进行点赞
+            typeId2 = collectionAssetService.insertCollection(0, articleId, studentId);
+        }else{
+            //取消点赞
+            typeId2 = collectionAssetService.removeCollection(0, articleId, studentId);
+        }
+        if(null!=typeId2){
+            return ResponseBo.ok("操作成功");
         }
         log.error("结果为null");
         return ResponseBo.error("结果异常");
