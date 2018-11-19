@@ -1,17 +1,22 @@
 package com.jnshu.sildenafil.system.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.jnshu.sildenafil.common.annotation.UseLog;
 import com.jnshu.sildenafil.common.domain.ResponseBo;
 import com.jnshu.sildenafil.system.domain.Article;
 import com.jnshu.sildenafil.system.service.ArticleService;
+import com.jnshu.sildenafil.system.service.CollectionAssetService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.sql.rowset.serial.SerialException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author feifei
@@ -21,6 +26,8 @@ import java.util.List;
 public class ArticleController {
     @Autowired
     private ArticleService articleService;
+    @Autowired
+    private CollectionAssetService collectionAssetService;
     /**前台分页查询banner文章信息
      * @param page 页码
      * @param size 每页数量
@@ -67,7 +74,17 @@ public class ArticleController {
         log.error("结果为null");
         return ResponseBo.error("结果异常");
     }
-
-
-
+    /**
+     * 学生文章收藏列表
+     * @param [studentId]
+     * @return  com.jnshu.sildenafil.common.domain.ResponseBo
+     */
+    @UseLog("学生文章收藏列表")
+    @ResponseBody
+    @GetMapping(value = "/a/u/front/article/collection/student")
+    public ResponseBo collectionByStudent(Long studentId) throws Exception{
+        List<Long> typeIdList =collectionAssetService.collectiongListByStudent(0,studentId);
+        List<Article> typeList = typeIdList.stream().map(id ->articleService.getById(id)).collect(Collectors.toList());
+        return ResponseBo.ok().put("data", typeList);
+    }
 }

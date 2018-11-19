@@ -36,12 +36,10 @@ public class EmailUtil {
      * @param address（邮箱地址）
      * @return  void
      */
-    public static void sendEmail(String address )throws IOException{
+    public static String sendEmail(String address,String code)throws IOException{
         HttpPost httpPost = new HttpPost(url);
         CloseableHttpClient httpClient = HttpClients.createDefault();
         String userName = "测试用户";
-        String code = VerifyCode.codes(5);
-
         List params = new ArrayList();
         // 您需要登录SendCloud创建API_USER，使用API_USER和API_KEY才可以进行邮件的发送。
         params.add(new BasicNameValuePair("apiUser", apiUser));
@@ -51,21 +49,22 @@ public class EmailUtil {
         params.add(new BasicNameValuePair("to", address));
         params.add(new BasicNameValuePair("subject", subject));
         params.add(new BasicNameValuePair("html", "<img src=\"https://gcstudio-1251897722.cos.ap-chengdu.myqcloud.com/uugai.com_1542595691912.png\" style=\"border:0\"><p>亲爱的用户："+userName+"</p><p>这封邮件用于验证绑定邮箱</p><p>验证码：</p><h2>"+code+"</h2>"));
-//        params.add(new BasicNameValuePair("html", "你太棒了！你已成功的从SendCloud发送了一封测试邮件，接下来快登录前台去完善账户信息吧！"));
-
         httpPost.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
+
         // 请求
         HttpResponse response = httpClient.execute(httpPost);
+        httpPost.releaseConnection();
         // 处理响应
         if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
             // 正常返回
             // 读取xml文档
             String result = EntityUtils.toString(response.getEntity());
             System.out.println(result);
+            return result;
         } else {
-            System.err.println("error");
+            System.err.println(response.getStatusLine().getReasonPhrase());
+            return response.getStatusLine().getReasonPhrase();
         }
-        httpPost.releaseConnection();
     }
 
 }

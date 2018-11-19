@@ -1,13 +1,18 @@
 package com.jnshu.sildenafil.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.jnshu.sildenafil.system.domain.CollectionAsset;
 import com.jnshu.sildenafil.system.mapper.CollectionAssetDao;
 import com.jnshu.sildenafil.system.service.CollectionAssetService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.jnshu.sildenafil.util.MyPage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -79,5 +84,16 @@ public class CollectionAssetServiceImpl extends ServiceImpl<CollectionAssetDao, 
             log.info("not collect");
             return 0;
         }
+    }
+    @Override
+    public List<Long> collectiongListByStudent( Integer type, Long studentId){
+        QueryWrapper<CollectionAsset> wrapper = new QueryWrapper<>();
+        wrapper.eq("type",type);
+        wrapper.eq("student_id",studentId);
+        wrapper.orderByDesc("create_at");
+        wrapper.select("type_id");
+        List<CollectionAsset> collectionAssetList = collectionAssetDao.selectList(wrapper);
+        List<Long> idList = collectionAssetList.stream().map(CollectionAsset::getTypeId).collect(Collectors.toList());
+        return idList;
     }
 }

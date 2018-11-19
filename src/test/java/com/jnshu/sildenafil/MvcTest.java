@@ -47,10 +47,23 @@ public class MvcTest {
 
     @Test
     public void Q2() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/a/u/front/forum/list")
+        mockMvc.perform(MockMvcRequestBuilders.get("/a/u/front/code")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .param("page", "1")
-                .param("size", "2")
+                .param("account", "16600264020")
+                .param("type", "0")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    public void code() throws Exception{
+        mockMvc.perform(MockMvcRequestBuilders.get("/a/u/front/bind")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .param("studentId", "2")
+                .param("account", "16600264020")
+                .param("type", "0")
+                .param("code", "K63SR")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcResultHandlers.print());

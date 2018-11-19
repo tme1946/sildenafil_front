@@ -6,7 +6,6 @@ import com.github.qcloudsms.SmsSingleSender;
 import com.github.qcloudsms.SmsSingleSenderResult;
 import com.github.qcloudsms.httpclient.HTTPException;
 import org.json.JSONException;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -32,17 +31,20 @@ public class ShortMassage {
      * [phoneNumbers]
      * @return  java.lang.String
      */
-    public String singleSend(String phoneNumbers){
-        String code = "";
+    public static String singleSend(String phoneNumbers,String code){
+        SmsSingleSenderResult result = new SmsSingleSenderResult();
         try {
             //数组具体的元素个数和模板中变量个数必须一致，例如事例中templateId:5678对应一个变量，参数数组中元素个数也必须是一个
-            ArrayList<String> params =VerifyCode.numbers(6,1);
-            code = params.get(0);
+//            ArrayList<String> params =VerifyCode.numbers(6,1);
+//            code = params.get(0);
+            ArrayList<String> params = new ArrayList<>();
+            params.add(code);
             SmsSingleSender ssender = new SmsSingleSender(appid, appkey);
             // 签名参数未提供或者为空时，会使用默认签名发送短信
-            SmsSingleSenderResult result = ssender.sendWithParam(
+             result = ssender.sendWithParam(
                             "86", phoneNumbers, verifyTemplateId, params, smsSign, "", "");
             System.out.println(result);
+
         } catch (HTTPException e) {
             // HTTP响应码错误
             e.printStackTrace();
@@ -53,14 +55,14 @@ public class ShortMassage {
             // 网络IO错误
             e.printStackTrace();
         }
-        return code;
+        return result.toString();
     }
     /**
      * 发送短信（群发） 
      * [phoneNumbers]
      * @return  java.util.List
      */
-    public void multiSend(ArrayList<String> phoneNumbers){
+    public static void multiSend(ArrayList<String> phoneNumbers){
         try {
             //数组具体的元素个数和模板中变量个数必须一致，例如事例中templateId:5678对应一个变量，参数数组中元素个数也必须是一个
             ArrayList<String> params = new ArrayList<>();

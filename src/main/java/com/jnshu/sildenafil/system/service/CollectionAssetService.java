@@ -1,7 +1,10 @@
 package com.jnshu.sildenafil.system.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.jnshu.sildenafil.system.domain.CollectionAsset;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.List;
 
 /**
  * <p>
@@ -30,5 +33,12 @@ public interface CollectionAssetService extends IService<CollectionAsset> {
      * @return 0为不赞，1为点赞
      */
     int selectCollection(Integer type,Long typeId,Long studentId);
+
+    /**
+     * 查询学生收藏列表
+     * @param [ type, studentId]
+     * @return  com.baomidou.mybatisplus.core.metadata.IPage<com.jnshu.sildenafil.system.domain.CollectionAsset>
+     */
+    List<Long> collectiongListByStudent(Integer type, Long studentId);
 
 }
