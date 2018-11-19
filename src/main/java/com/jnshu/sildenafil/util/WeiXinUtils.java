@@ -10,10 +10,13 @@ import net.sf.json.JSONObject;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
@@ -48,8 +51,10 @@ public class WeiXinUtils {
      * @param url
      * @return
      */
+    //DefaultHttpClient已经被弃用了，我在这个方法下换成了现在的用法，你可以参考下  --铁
     public static JSONObject doGetStr(String url){
-        DefaultHttpClient defaultHttpClient = new DefaultHttpClient();
+        HttpClient defaultHttpClient = HttpClientBuilder.create().build();
+        //DefaultHttpClient defaultHttpClient = new DefaultHttpClient();
         HttpGet httpGet = new HttpGet(url);
         JSONObject jsonObject = null;
         try{

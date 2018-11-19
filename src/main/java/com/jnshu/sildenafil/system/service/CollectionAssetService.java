@@ -1,8 +1,13 @@
 package com.jnshu.sildenafil.system.service;
 
 import com.jnshu.sildenafil.common.exception.ServiceException;
+
+import com.baomidou.mybatisplus.core.metadata.IPage;
+
 import com.jnshu.sildenafil.system.domain.CollectionAsset;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.List;
 
 /**
  * <p>
@@ -40,5 +45,12 @@ public interface CollectionAssetService extends IService<CollectionAsset> {
      * @return 0为未收藏，1为收藏
      */
     int selectCollection(Integer type,Long typeId,Long studentId)throws ServiceException;
+
+    /**
+     * 查询学生收藏列表
+     * @param [ type, studentId]
+     * @return  com.baomidou.mybatisplus.core.metadata.IPage<com.jnshu.sildenafil.system.domain.CollectionAsset>
+     */
+    List<Long> collectiongListByStudent(Integer type, Long studentId);
 
 }

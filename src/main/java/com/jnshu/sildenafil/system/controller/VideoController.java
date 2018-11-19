@@ -1,14 +1,20 @@
 package com.jnshu.sildenafil.system.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.jnshu.sildenafil.common.annotation.UseLog;
 import com.jnshu.sildenafil.common.domain.ResponseBo;
+import com.jnshu.sildenafil.system.domain.Article;
 import com.jnshu.sildenafil.system.domain.Video;
+import com.jnshu.sildenafil.system.service.CollectionAssetService;
 import com.jnshu.sildenafil.system.service.VideoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * #Title: VideoController
@@ -28,6 +34,8 @@ public class VideoController {
     public VideoController(VideoService videoService) {
         this.videoService = videoService;
     }
+    @Autowired
+    private CollectionAssetService collectionAssetService;
 
     @ResponseBody
     @GetMapping(value = "/a/u/front/video/list")
@@ -77,7 +85,19 @@ public class VideoController {
         }
         return ResponseBo.ok("接口通，成功获取数据").put("data",video);
     }
-
+    /**
+     * 学生视频收藏列表 
+     * @param [studentId]
+     * @return  com.jnshu.sildenafil.common.domain.ResponseBo
+     */
+    @UseLog("学生视频收藏列表")
+    @ResponseBody
+    @GetMapping(value = "/a/u/front/video/collection/student")
+    public ResponseBo collectionByStudent(Long studentId) throws Exception{
+        List<Long> typeIdList =collectionAssetService.collectiongListByStudent(1,studentId);
+        List<Video> typeList = typeIdList.stream().map(id ->videoService.getById(id)).collect(Collectors.toList());
+        return ResponseBo.ok().put("data", typeList);
+    }
 
 
 }

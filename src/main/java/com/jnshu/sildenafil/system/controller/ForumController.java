@@ -43,10 +43,10 @@ public class ForumController {
         List<Forum> forumList = forumIPage.getRecords();
         List<Long> idList = forumList.stream().map(Forum::getStudentId).collect(Collectors.toList());
         List<Student> studentList = idList.stream().map((id)->studentService.getById(id)).collect(Collectors.toList());
-        List imgList = studentList.stream().map(Student::getImg).collect(Collectors.toList());
-        List nicknameList = studentList.stream().map(Student::getNickname).collect(Collectors.toList());
-        return ResponseBo.ok().put("forumList",forumList)
-                .put("nicknameList",nicknameList).put("imgList",imgList);
+//        List imgList = studentList.stream().map(Student::getImg).collect(Collectors.toList());
+//        List nicknameList = studentList.stream().map(Student::getNickname).collect(Collectors.toList());
+        return ResponseBo.ok().put("forumList",forumIPage).put("studentList",studentList);
+//                .put("nicknameList",nicknameList).put("imgList",imgList);
     }
     /**
      * 学生发帖列表（学生证/我的帖子） 
