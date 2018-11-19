@@ -6,6 +6,8 @@ spring:
     store-type: none
   profiles:
       active: local
+
+
   datasource:
     druid:
       db-type: com.alibaba.druid.pool.DruidDataSource
