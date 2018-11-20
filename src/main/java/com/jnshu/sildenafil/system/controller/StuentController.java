@@ -57,6 +57,7 @@ public class StuentController {
      * @param student
      * @return  com.jnshu.sildenafil.common.domain.ResponseBo
      */
+    @UseLog("修改学生信息")
     @ResponseBody
     @PutMapping(value = "/a/u/front/student")
     public ResponseBo updateStudent(Student student){
@@ -64,10 +65,8 @@ public class StuentController {
             log.error("args for student is null");
             return ResponseBo.error("student is null");
         }
-        log.info("args for updateStudentId is : studentId={}",student.getId());
         student.setUpdateAt(TIME);
         if(studentService.updateById(student)){
-            log.info("result for updateStudentId is : studentId={}",student.getId());
             return ResponseBo.ok().put("data",student);
         }else{
             log.error("result for updateStudent error");
@@ -79,6 +78,7 @@ public class StuentController {
      * @param studentId
      * @return  com.jnshu.sildenafil.common.domain.ResponseBo
      */
+    @UseLog("查询学生信息")
     @ResponseBody
     @GetMapping(value = "/a/u/front/student")
     public ResponseBo getStudent(Long studentId){
@@ -122,7 +122,7 @@ public class StuentController {
         redisUtil.set(account,code,600);
         return ResponseBo.ok().put("data",result);
     }
-    //@UseLog("绑定手机/邮箱")
+    @UseLog("绑定0手机/1邮箱")
     @ResponseBody
     @GetMapping(value = "/a/u/front/bind")
     public ResponseBo bind(Long studentId,String account,Integer type,String code){

@@ -61,9 +61,9 @@ public class MvcTest {
         mockMvc.perform(MockMvcRequestBuilders.get("/a/u/front/bind")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .param("studentId", "2")
-                .param("account", "tme1024723995@126.com")
-                .param("type", "1")
-                .param("code", "J1S3P")
+                .param("account", "16600264020")
+                .param("type", "0")
+                .param("code", "76698")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcResultHandlers.print());

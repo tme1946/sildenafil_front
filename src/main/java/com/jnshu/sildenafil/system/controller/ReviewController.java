@@ -1,6 +1,7 @@
 package com.jnshu.sildenafil.system.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.jnshu.sildenafil.common.annotation.UseLog;
 import com.jnshu.sildenafil.common.domain.ResponseBo;
 import com.jnshu.sildenafil.system.domain.Review;
 import com.jnshu.sildenafil.system.service.ReviewService;
@@ -31,15 +32,14 @@ public class ReviewController {
      * @param [page, size, student_id]
      * @return  com.jnshu.sildenafil.common.domain.ResponseBo
      */
+    @UseLog("学生回复列表")
     @ResponseBody
     @GetMapping(value = "/a/u/front/reviews/student")
     public ResponseBo listByStudent(Integer page,Integer size,Long studentId){
-        log.info("args for studentId is: studentId={}",studentId);
         if(studentId == null){
             log.error("args for studentId is null");
             return ResponseBo.error("studentId is null");}
         IPage iPage = reviewService.reviewByStudent(page,size,studentId);
-        log.info("result for reviewByStudentSize is : Size={}",iPage.getSize());
         return ResponseBo.ok().put("reviewList",iPage);
     }
     /**
@@ -47,23 +47,20 @@ public class ReviewController {
      * @param [review]
      * @return  com.jnshu.sildenafil.common.domain.ResponseBo
      */
+    @UseLog("新建回复")
     @ResponseBody
     @PostMapping(value = "/a/u/front/review")
     public ResponseBo addReview(Review review){
-        log.info("args for insertReview is : studentId={}",review.getStudentId());
         if(review.getStudentId()==null){
-            log.error("args for studentId is null");
             return ResponseBo.error("studentId is null"); }
         if(review.getType()==null || review.getId() == null){
-            log.error("args for type or typeId is null");
             return ResponseBo.error("type or typeId is null");}
         review.setCreateAt(TIME);
         if(reviewService.save(review)) {
-            log.info("create student success");
             return ResponseBo.ok();
         }else {
             log.error("addReview error");
-            return ResponseBo.error("create error");
+            return ResponseBo.error("createReviewError");
         }
 
     }
@@ -72,10 +69,10 @@ public class ReviewController {
      * @param [page, size, type, typeId]
      * @return  com.jnshu.sildenafil.common.domain.ResponseBo
      */
+    @UseLog("实体回复列表")
     @ResponseBody
     @GetMapping(value = "/a/u/front/reviews/type")
     public ResponseBo listByType(Integer page,Integer size ,Integer type,Long typeId){
-        log.info("args for type,typeId is: type={},typeId{}",type,typeId);
         if(type == null){
             log.error("args for type is null");
             return ResponseBo.error("type is null");}
@@ -83,7 +80,6 @@ public class ReviewController {
             log.error("args for typeId is null");
             return ResponseBo.error("typeId is null");}
         IPage iPage = reviewService.reviewByType(page,size,type,typeId);
-        log.info("result for reviewListSize is : Size={}",iPage.getSize());
         return ResponseBo.ok().put("data",iPage);
     }
     /**
@@ -91,15 +87,14 @@ public class ReviewController {
      * @param [reviewId]
      * @return  com.jnshu.sildenafil.common.domain.ResponseBo
      */
+    @UseLog("删除回复")
     @ResponseBody
     @DeleteMapping(value = "/a/u/front/review")
     public ResponseBo deleteReview(Long reviewId){
-        log.info("args for deleteReviewId is : reviewId={}",reviewId);
         if(reviewId==null){
             log.error("args for reviewId is null");
             return ResponseBo.error("ReviewId is null"); }
         if(reviewService.removeById(reviewId)){
-            log.info("result for deleteReviewId is : reviewId={}",reviewId);
             return ResponseBo.ok();
         }else{
             log.error("deleteReview error");
