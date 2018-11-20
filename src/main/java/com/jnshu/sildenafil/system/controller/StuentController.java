@@ -29,10 +29,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class StuentController {
     @Autowired
-    StudentService studentService;
+    private StudentService studentService;
     @Autowired
-    RedisUtil redisUtil;
-    private Long TIME = System.currentTimeMillis();
+    private RedisUtil redisUtil;
     /**
      * 验证登陆方法（未使用安全框架设计）            
      * @param openId
@@ -65,7 +64,7 @@ public class StuentController {
             log.error("args for student is null");
             return ResponseBo.error("student is null");
         }
-        student.setUpdateAt(TIME);
+        student.setUpdateAt(System.currentTimeMillis());
         if(studentService.updateById(student)){
             return ResponseBo.ok().put("data",student);
         }else{
@@ -86,10 +85,8 @@ public class StuentController {
             log.error("args for studentId is null");
             return ResponseBo.error("studentId is null");
         }
-        log.info("args for getStudentId is : studentId={}",studentId);
         Student student = studentService.getById(studentId);
         if(student != null){
-            log.info("result for getStudentById is : studentId={}",studentId);
             return ResponseBo.ok().put("data",student);
         }else{
             log.error("result for getStudent is student not exist");
@@ -126,6 +123,9 @@ public class StuentController {
     @ResponseBody
     @GetMapping(value = "/a/u/front/bind")
     public ResponseBo bind(Long studentId,String account,Integer type,String code){
+        if(studentId == null){
+            log.error("args for studentId is null");
+            return ResponseBo.error("studentId is null");}
         String redisCode = (String)redisUtil.get(account);
         if(code.equals(redisCode)){
             Student student = studentService.getById(studentId);

@@ -44,6 +44,9 @@ public class ForumController {
     @ResponseBody
     @PostMapping(value = "/a/u/front/forum")
     public ResponseBo addForum(Forum forum){
+        if(forum == null){
+            log.error("args for forum is null");
+            return ResponseBo.error("forum is null");}
         forum.setCreateAt(System.currentTimeMillis());
         Boolean isSave = forumService.save(forum);
         if(isSave) {
@@ -62,6 +65,9 @@ public class ForumController {
     @ResponseBody
     @GetMapping(value = "/a/u/front/forum")
     public ResponseBo getForum(Long forumId){
+        if(forumId == null){
+            log.error("args for forumId is null");
+            return ResponseBo.error("forumId is null");}
         Forum forum = forumService.getById(forumId);
         return ResponseBo.ok().put("data",forum);
     }
@@ -73,6 +79,9 @@ public class ForumController {
     @ResponseBody
     @DeleteMapping(value = "/a/u/front/forum")
     public ResponseBo delForum(Long forumId){
+        if(forumId == null){
+            log.error("args for forumId is null");
+            return ResponseBo.error("forumId is null");}
         Boolean isDel = forumService.removeById(forumId);
         if(isDel) {
             return ResponseBo.ok().put("data", isDel);
@@ -107,6 +116,9 @@ public class ForumController {
     @ResponseBody
     @GetMapping(value ="/a/u/front/forum/student")
     public ResponseBo forumByStudent(Integer page, Integer size, Long studentId){
+        if(studentId == null){
+            log.error("args for studentId is null");
+            return ResponseBo.error("studentId is null");}
         IPage<Forum> forumByStudent = forumService.forumByStudent(page,size,studentId);
         return ResponseBo.ok().put("data",forumByStudent);
     }

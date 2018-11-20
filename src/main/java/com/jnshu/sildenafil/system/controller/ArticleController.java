@@ -134,6 +134,9 @@ public class ArticleController {
     @ResponseBody
     @GetMapping(value = "/a/u/front/article/collection/student")
     public ResponseBo collectionByStudent(Long studentId) throws Exception{
+        if(studentId == null){
+            log.error("args for studentId is null");
+            return ResponseBo.error("studentId is null");}
         List<Long> typeIdList =collectionAssetService.collectiongListByStudent(0,studentId);
         List<Article> typeList = typeIdList.stream().map(id ->articleService.getById(id)).collect(Collectors.toList());
         return ResponseBo.ok().put("data", typeList);
