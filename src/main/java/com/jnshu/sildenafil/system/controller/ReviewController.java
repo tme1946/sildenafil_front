@@ -26,10 +26,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class ReviewController {
     @Autowired
     ReviewService reviewService;
-    private Long TIME = System.currentTimeMillis();
     /**
      *根据学生id获取评论列表（学生证/我的回复）
-     * @param [page, size, student_id]
+     * @param page, size, student_id
      * @return  com.jnshu.sildenafil.common.domain.ResponseBo
      */
     @UseLog("学生回复列表")
@@ -44,7 +43,7 @@ public class ReviewController {
     }
     /**
      * 新建回复
-     * @param [review]
+     * @param review
      * @return  com.jnshu.sildenafil.common.domain.ResponseBo
      */
     @UseLog("新建回复")
@@ -55,7 +54,7 @@ public class ReviewController {
             return ResponseBo.error("studentId is null"); }
         if(review.getType()==null || review.getId() == null){
             return ResponseBo.error("type or typeId is null");}
-        review.setCreateAt(TIME);
+        review.setCreateAt(System.currentTimeMillis());
         if(reviewService.save(review)) {
             return ResponseBo.ok();
         }else {
@@ -66,7 +65,7 @@ public class ReviewController {
     }
     /**
      *  根据type和typeId获取评论列表（单体查询）
-     * @param [page, size, type, typeId]
+     * @param page, size, type, typeId
      * @return  com.jnshu.sildenafil.common.domain.ResponseBo
      */
     @UseLog("实体回复列表")
@@ -84,7 +83,7 @@ public class ReviewController {
     }
     /**
      * 删除回复（主键）
-     * @param [reviewId]
+     * @param reviewId
      * @return  com.jnshu.sildenafil.common.domain.ResponseBo
      */
     @UseLog("删除回复")

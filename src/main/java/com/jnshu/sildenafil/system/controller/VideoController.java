@@ -87,7 +87,7 @@ public class VideoController {
     }
     /**
      * 学生视频收藏列表 
-     * @param [studentId]
+     * @param studentId
      * @return  com.jnshu.sildenafil.common.domain.ResponseBo
      */
     @UseLog("学生视频收藏列表")
