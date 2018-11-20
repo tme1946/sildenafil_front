@@ -119,8 +119,7 @@ public class StuentController {
                 default:
         }
         System.out.println("account："+account+"code："+code);
-//        redisCode.set(account,code,300);
-        redisUtil.set(account,code,1200);
+        redisUtil.set(account,code,600);
         return ResponseBo.ok().put("data",result);
     }
     //@UseLog("绑定手机/邮箱")
@@ -128,15 +127,11 @@ public class StuentController {
     @GetMapping(value = "/a/u/front/bind")
     public ResponseBo bind(Long studentId,String account,Integer type,String code){
         String redisCode = (String)redisUtil.get(account);
-        System.out.println("redisCode"+redisCode);
-        System.out.println("code:"+code);
         if(code.equals(redisCode)){
             Student student = studentService.getById(studentId);
             if(type == 0){
-                System.out.println("保存手机");
                 student.setPhone(account);
             }else if(type == 1){
-                System.out.println("保存邮箱");
                 student.setEmail(account);
             }
             student.setUpdateAt(System.currentTimeMillis());
