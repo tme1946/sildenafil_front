@@ -35,7 +35,7 @@ public class StuentController {
     private Long TIME = System.currentTimeMillis();
     /**
      * 验证登陆方法（未使用安全框架设计）            
-     * @param [openId]  
+     * @param openId
      * @return  com.jnshu.sildenafil.common.domain.ResponseBo
      */
     @ResponseBody
@@ -54,7 +54,7 @@ public class StuentController {
     }
     /**
      * 修改学生信息
-     * @param [student]
+     * @param student
      * @return  com.jnshu.sildenafil.common.domain.ResponseBo
      */
     @ResponseBody
@@ -76,7 +76,7 @@ public class StuentController {
     }
     /**
      * 查询学生信息（主键查询） 
-     * @param [id]
+     * @param studentId
      * @return  com.jnshu.sildenafil.common.domain.ResponseBo
      */
     @ResponseBody
@@ -98,7 +98,8 @@ public class StuentController {
     }
     /**
      * 发送验证码(type:0,手机/1,邮箱）
-     * @param [account][type]
+     * @param account
+     * @param type
      * @return
      */
     @ResponseBody
@@ -119,22 +120,23 @@ public class StuentController {
         }
         System.out.println("account："+account+"code："+code);
 //        redisCode.set(account,code,300);
-        redisUtil.set(account,code,300);
+        redisUtil.set(account,code,1200);
         return ResponseBo.ok().put("data",result);
     }
-    @UseLog("绑定手机/邮箱")
+    //@UseLog("绑定手机/邮箱")
     @ResponseBody
     @GetMapping(value = "/a/u/front/bind")
     public ResponseBo bind(Long studentId,String account,Integer type,String code){
-        RedisUtil redisUtil = new RedisUtil();
         String redisCode = (String)redisUtil.get(account);
         System.out.println("redisCode"+redisCode);
         System.out.println("code:"+code);
         if(code.equals(redisCode)){
             Student student = studentService.getById(studentId);
             if(type == 0){
+                System.out.println("保存手机");
                 student.setPhone(account);
             }else if(type == 1){
+                System.out.println("保存邮箱");
                 student.setEmail(account);
             }
             student.setUpdateAt(System.currentTimeMillis());

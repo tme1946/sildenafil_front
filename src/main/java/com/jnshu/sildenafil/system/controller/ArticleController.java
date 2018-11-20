@@ -33,8 +33,6 @@ public class ArticleController {
     @Autowired
     private CollectionAssetService collectionAssetService;
 
-    private CollectionAssetService collectionAssetService;
-
     /**前台分页查询banner文章信息
      * @param page 页码
      * @param size 每页数量
