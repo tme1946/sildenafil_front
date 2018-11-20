@@ -101,23 +101,37 @@ public class StuentController {
      */
     @ResponseBody
     @GetMapping(value = "/a/u/front/code")
-    public ResponseBo sendCode(String account,Integer type) throws Exception{
+    public ResponseBo sendCode(String account,Integer type,Long studentId) throws Exception{
         String result = null;
         String code = null;
-        switch (type){
-            case 0:
-                 code = VerifyCode.numbers(5);
-                 result = ShortMassage.singleSend(account,code);
-                break;
-            case 1:
-                 code = VerifyCode.codes(5);
-                 result = EmailUtil.sendEmail(account,code);
-                break;
-                default:
+        Boolean allowSend;
+        String key = studentId+"-"+type;
+        if(redisUtil.get(key) == null){
+            redisUtil.set(key,0,86400);
         }
-        System.out.println("account："+account+"code："+code);
-        redisUtil.set(account,code,600);
-        return ResponseBo.ok().put("data",result);
+        Integer value = (Integer)redisUtil.get(key);
+        if(value < 5){
+            allowSend = true;
+            value++;
+            switch (type){
+                case 0:
+                    code = VerifyCode.numbers(5);
+                    result = ShortMassage.singleSend(account,code);
+                    break;
+                case 1:
+                    code = VerifyCode.codes(5);
+                    result = EmailUtil.sendEmail(account,code);
+                    break;
+                default:
+            }
+            System.out.println("account："+account+"code："+code);
+            redisUtil.set(account,code,600);
+            redisUtil.set(key,value,86400);
+        }else{
+            allowSend = false;
+        }
+        System.out.println("value:"+value);
+        return ResponseBo.ok().put("data",allowSend).put("result",result);
     }
     @UseLog("绑定0手机/1邮箱")
     @ResponseBody

@@ -51,6 +51,7 @@ public class MvcTest {
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .param("account", "16600264020")
                 .param("type", "0")
+                .param("studentId","2")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcResultHandlers.print());
