@@ -27,8 +27,8 @@ public class ForumServiceImpl extends ServiceImpl<ForumDao, Forum> implements Fo
     @Autowired
     StudentDao studentDao;
     @Override
-    public IPage forumFrontList(Integer page, Integer size){
-        IPage frontPage = new MyPage(page,size).setDesc("create_at");
+    public IPage <Forum> forumFrontList(Integer page, Integer size){
+        IPage<Forum> frontPage = new MyPage(page,size).setDesc("create_at");
         QueryWrapper<Forum> wrapper = new QueryWrapper<>();
         wrapper.orderByDesc("create_at");
         return forumDao.selectPage(frontPage,wrapper);
