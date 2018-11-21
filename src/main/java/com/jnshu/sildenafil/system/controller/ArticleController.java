@@ -92,7 +92,8 @@ public class ArticleController {
         log.info("args for insertLike is : typeId={}&studentId={}&",articleId,studentId);
         Long likeId=likeAssetService.insertLike(0,articleId,studentId);
         if(null!=likeId){
-            return ResponseBo.ok();
+            articleService.updateArticleLikeAmount(articleId);
+            return ResponseBo.ok("操作成功");
         }
         log.error("结果为null");
         return ResponseBo.error("结果异常");
@@ -110,11 +111,13 @@ public class ArticleController {
         if(null!=status && 1==status) {
             //进行点赞
             typeId2 = collectionAssetService.insertCollection(0, articleId, studentId);
+
         }else{
             //取消点赞
             typeId2 = collectionAssetService.removeCollection(0, articleId, studentId);
         }
         if(null!=typeId2){
+            articleService.updateArticleCollectionAmount(articleId);
             return ResponseBo.ok("操作成功");
         }
         log.error("结果为null");

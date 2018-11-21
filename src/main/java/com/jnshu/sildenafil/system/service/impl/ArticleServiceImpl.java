@@ -4,9 +4,14 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.jnshu.sildenafil.common.exception.ServiceException;
 import com.jnshu.sildenafil.system.domain.Article;
+import com.jnshu.sildenafil.system.domain.CollectionAsset;
+import com.jnshu.sildenafil.system.domain.LikeAsset;
 import com.jnshu.sildenafil.system.mapper.ArticleDao;
+import com.jnshu.sildenafil.system.mapper.CollectionAssetDao;
+import com.jnshu.sildenafil.system.mapper.LikeAssetDao;
 import com.jnshu.sildenafil.system.service.ArticleService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.jnshu.sildenafil.system.service.LikeAssetService;
 import com.jnshu.sildenafil.util.MyPage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +34,10 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
 
     @Autowired(required = false)
     private ArticleDao articleDao;
-
+    @Autowired
+    private LikeAssetDao likeAssetDao;
+    @Autowired
+    private CollectionAssetDao collectionAssetDao;
     /**前台分页查询card文章信息
      * @param page 页码
      * @param size 每页数量
@@ -111,5 +119,53 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
             return article;
         }
     }
+    /**前台根据文章id修改文章点赞数
+     * @param articleId 文章id
+     * @throws ServiceException 自定义异常，参数错误
+     * @return 对应文章id
+     */
+    @Override
+    public Long updateArticleLikeAmount(Long articleId) throws ServiceException{
+        log.info("args for updateArticleLikeAmount is : articleId={}",articleId);
+        if (null == articleId) {
+            log.error("result for updateArticleLikeAmount error;args is null");
+            throw new ServiceException("updateArticleLikeAmount args is null");
+        }else{
+            //构建id查询文章点赞的数量
+            QueryWrapper<LikeAsset> queryWrapper=new QueryWrapper<>();
+            queryWrapper.eq("type",0).eq("type_id",articleId);
+            int likeAmount=likeAssetDao.selectCount(queryWrapper);
+            log.info("result for updateArticleLikeAmount likeAmount=[{}]",likeAmount);
+            Article article=new Article();
+            article.setLikeAmount(likeAmount);
+            article.setId(articleId);
+            articleDao.updateById(article);
+            return  articleId;
+        }
+    }
 
+    /**前台根据文章id修改文章收藏数
+     * @param articleId 文章id
+     * @throws ServiceException 自定义异常，参数错误
+     * @return 对应文章id
+     */
+    @Override
+    public Long updateArticleCollectionAmount(Long articleId) throws ServiceException{
+        log.info("args for updateArticleCollectionAmount is : articleId={}",articleId);
+        if (null == articleId) {
+            log.error("result for updateArticleCollectionAmount error;args is null");
+            throw new ServiceException("updateArticleCollectionAmount args is null");
+        }else{
+            //构建id查询文章点赞的数量
+            QueryWrapper<CollectionAsset> queryWrapper=new QueryWrapper<>();
+            queryWrapper.eq("type",0).eq("type_id",articleId);
+            int collectionAmount=collectionAssetDao.selectCount(queryWrapper);
+            log.info("result for updateArticleCollectionAmount collectionAmount=[{}]",collectionAmount);
+            Article article=new Article();
+            article.setCollectionAmount(collectionAmount);
+            article.setId(articleId);
+            articleDao.updateById(article);
+            return  articleId;
+        }
+    }
 }
