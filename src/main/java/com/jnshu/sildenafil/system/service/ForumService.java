@@ -15,5 +15,5 @@ import com.jnshu.sildenafil.system.domain.Review;
  */
 public interface ForumService extends IService<Forum> {
     IPage<Forum> forumByStudent(Integer page, Integer size, Long studentId);
-    IPage forumFrontList(Integer page, Integer size);
+    IPage<Forum> forumFrontList(Integer page, Integer size);
 }

@@ -2,8 +2,11 @@ package com.jnshu.sildenafil.system.controller;
 
 import com.jnshu.sildenafil.common.annotation.UseLog;
 import com.jnshu.sildenafil.common.domain.ResponseBo;
+import com.jnshu.sildenafil.system.domain.Article;
 import com.jnshu.sildenafil.system.domain.FrontLog;
 import com.jnshu.sildenafil.system.domain.Student;
+import com.jnshu.sildenafil.system.service.ArticleService;
+import com.jnshu.sildenafil.system.service.CollectionAssetService;
 import com.jnshu.sildenafil.system.service.StudentService;
 import com.jnshu.sildenafil.util.EmailUtil;
 import com.jnshu.sildenafil.util.RedisUtil;
@@ -17,6 +20,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * @ProjectName: sildenafil_front
  * @Package: com.jnshu.sildenafil.system.controller
@@ -29,13 +35,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class StuentController {
     @Autowired
-    StudentService studentService;
+    private StudentService studentService;
     @Autowired
-    RedisUtil redisUtil;
+     private RedisUtil redisUtil;
+    @Autowired
+    private CollectionAssetService collectionAssetService;
+    @Autowired
+    private ArticleService articleService;
     private Long TIME = System.currentTimeMillis();
     /**
      * 验证登陆方法（未使用安全框架设计）            
-     * @param [openId]  
+     * @param openId
      * @return  com.jnshu.sildenafil.common.domain.ResponseBo
      */
     @ResponseBody
@@ -54,9 +64,10 @@ public class StuentController {
     }
     /**
      * 修改学生信息
-     * @param [student]
+     * @param student
      * @return  com.jnshu.sildenafil.common.domain.ResponseBo
      */
+    @UseLog("修改学生信息")
     @ResponseBody
     @PutMapping(value = "/a/u/front/student")
     public ResponseBo updateStudent(Student student){
@@ -64,10 +75,8 @@ public class StuentController {
             log.error("args for student is null");
             return ResponseBo.error("student is null");
         }
-        log.info("args for updateStudentId is : studentId={}",student.getId());
-        student.setUpdateAt(TIME);
+        student.setUpdateAt(System.currentTimeMillis());
         if(studentService.updateById(student)){
-            log.info("result for updateStudentId is : studentId={}",student.getId());
             return ResponseBo.ok().put("data",student);
         }else{
             log.error("result for updateStudent error");
@@ -76,9 +85,10 @@ public class StuentController {
     }
     /**
      * 查询学生信息（主键查询） 
-     * @param [id]
+     * @param studentId
      * @return  com.jnshu.sildenafil.common.domain.ResponseBo
      */
+    @UseLog("查询学生信息")
     @ResponseBody
     @GetMapping(value = "/a/u/front/student")
     public ResponseBo getStudent(Long studentId){
@@ -86,10 +96,8 @@ public class StuentController {
             log.error("args for studentId is null");
             return ResponseBo.error("studentId is null");
         }
-        log.info("args for getStudentId is : studentId={}",studentId);
         Student student = studentService.getById(studentId);
         if(student != null){
-            log.info("result for getStudentById is : studentId={}",studentId);
             return ResponseBo.ok().put("data",student);
         }else{
             log.error("result for getStudent is student not exist");
@@ -98,38 +106,52 @@ public class StuentController {
     }
     /**
      * 发送验证码(type:0,手机/1,邮箱）
-     * @param [account][type]
+     * @param account
+     * @param type
      * @return
      */
     @ResponseBody
     @GetMapping(value = "/a/u/front/code")
-    public ResponseBo sendCode(String account,Integer type) throws Exception{
+    public ResponseBo sendCode(String account,Integer type,Long studentId) throws Exception{
         String result = null;
         String code = null;
-        switch (type){
-            case 0:
-                 code = VerifyCode.numbers(5);
-                 result = ShortMassage.singleSend(account,code);
-                break;
-            case 1:
-                 code = VerifyCode.codes(5);
-                 result = EmailUtil.sendEmail(account,code);
-                break;
-                default:
+        Boolean allowSend;
+        String key = studentId+"-"+type;
+        if(redisUtil.get(key) == null){
+            redisUtil.set(key,0,86400);
         }
-        System.out.println("account："+account+"code："+code);
-//        redisCode.set(account,code,300);
-        redisUtil.set(account,code,300);
-        return ResponseBo.ok().put("data",result);
+        Integer value = (Integer)redisUtil.get(key);
+        if(value < 5){
+            allowSend = true;
+            value++;
+            switch (type){
+                case 0:
+                    code = VerifyCode.numbers(5);
+                    result = ShortMassage.singleSend(account,code);
+                    break;
+                case 1:
+                    code = VerifyCode.codes(5);
+                    result = EmailUtil.sendEmail(account,code);
+                    break;
+                default:
+            }
+            System.out.println("account："+account+"code："+code);
+            redisUtil.set(account,code,600);
+            redisUtil.set(key,value,86400);
+        }else{
+            allowSend = false;
+        }
+        System.out.println("value:"+value);
+        return ResponseBo.ok().put("data",allowSend).put("result",result);
     }
-    @UseLog("绑定手机/邮箱")
+    @UseLog("绑定0手机/1邮箱")
     @ResponseBody
     @GetMapping(value = "/a/u/front/bind")
     public ResponseBo bind(Long studentId,String account,Integer type,String code){
-        RedisUtil redisUtil = new RedisUtil();
+        if(studentId == null){
+            log.error("args for studentId is null");
+            return ResponseBo.error("studentId is null");}
         String redisCode = (String)redisUtil.get(account);
-        System.out.println("redisCode"+redisCode);
-        System.out.println("code:"+code);
         if(code.equals(redisCode)){
             Student student = studentService.getById(studentId);
             if(type == 0){
@@ -144,4 +166,17 @@ public class StuentController {
         return ResponseBo.ok();
     }
 
+    /**
+     * 学生文章收藏列表
+     * @param studentId 学生did
+     * @return  com.jnshu.sildenafil.common.domain.ResponseBo
+     */
+    @UseLog("学生文章收藏列表")
+    @ResponseBody
+    @GetMapping(value = "/a/u/front/article/collection/student")
+    public ResponseBo collectionByStudent(Long studentId) throws Exception{
+        List<Long> typeIdList =collectionAssetService.collectiongListByStudent(0,studentId);
+        List<Article> typeList = typeIdList.stream().map(id ->articleService.getById(id)).collect(Collectors.toList());
+        return ResponseBo.ok().put("data", typeList);
+    }
 }

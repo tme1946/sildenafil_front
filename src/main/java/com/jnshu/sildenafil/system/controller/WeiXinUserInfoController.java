@@ -31,8 +31,10 @@ public class WeiXinUserInfoController {
      * @param map
      * @return
      */
+
     @RequestMapping("/a/a/student/{code}")
     public ResponseBo index(@PathVariable String code , HttpSession session, Map<String, Object> map) {
+
         //首先判断一下session中，是否有保存着的当前用户的信息，有的话，就不需要进行重复请求信息
         WeiXinUser  weiXinUser = null;
         if(session.getAttribute("currentUser") != null){

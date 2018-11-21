@@ -87,13 +87,16 @@ public class VideoController {
     }
     /**
      * 学生视频收藏列表 
-     * @param [studentId]
+     * @param studentId
      * @return  com.jnshu.sildenafil.common.domain.ResponseBo
      */
     @UseLog("学生视频收藏列表")
     @ResponseBody
     @GetMapping(value = "/a/u/front/video/collection/student")
     public ResponseBo collectionByStudent(Long studentId) throws Exception{
+        if(studentId == null){
+            log.error("args for studentId is null");
+            return ResponseBo.error("studentId is null");}
         List<Long> typeIdList =collectionAssetService.collectiongListByStudent(1,studentId);
         List<Video> typeList = typeIdList.stream().map(id ->videoService.getById(id)).collect(Collectors.toList());
         return ResponseBo.ok().put("data", typeList);

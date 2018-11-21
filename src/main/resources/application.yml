@@ -72,6 +72,8 @@ spring:
     #连接超时时间（毫秒）
     timeout: 1000
 
+  thymeleaf:
+     cache: false
 
 mybatis-plus:
   type-aliases-package: com.jnshu.sildenafil.system.domain
