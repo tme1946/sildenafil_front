@@ -30,7 +30,7 @@ public class WeiXinUserInfoController {
      * @param map
      * @return
      */
-    @RequestMapping("/getuserinfo")
+    @RequestMapping("/a/login")
     public String check(HttpServletRequest request , HttpSession session, Map<String, Object> map) {
         //首先判断一下session中，是否有保存着的当前用户的信息，有的话，就不需要进行重复请求信息
         WeiXinUser  weiXinUser = null ;

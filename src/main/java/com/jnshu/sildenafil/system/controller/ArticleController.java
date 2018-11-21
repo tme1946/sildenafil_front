@@ -1,7 +1,6 @@
 package com.jnshu.sildenafil.system.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.jnshu.sildenafil.common.annotation.UseLog;
 import com.jnshu.sildenafil.common.domain.ResponseBo;
 import com.jnshu.sildenafil.system.domain.Article;
 import com.jnshu.sildenafil.system.service.ArticleService;
@@ -10,21 +9,16 @@ import com.jnshu.sildenafil.system.service.LikeAssetService;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
-import javax.sql.rowset.serial.SerialException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author feifei
  */
+
 @Slf4j
-@Controller
+@RestController
 public class ArticleController {
     @Autowired
     private ArticleService articleService;
@@ -41,7 +35,7 @@ public class ArticleController {
     @GetMapping(value = "/a/u/front/article/banner")
     public ResponseBo getBannerPageList(Integer page, Integer size)throws Exception{
         log.info("args for getBannerList is : page={}&size={}",page,size);
-        List bannerList= articleService.getFrontBannerPageList(1,2);
+        List bannerList= articleService.getFrontBannerPageList(1,4);
         if(bannerList!=null){
             return ResponseBo.ok("请求成功").put("bannerList",bannerList);
         }
@@ -125,6 +119,7 @@ public class ArticleController {
         log.error("结果为null");
         return ResponseBo.error("结果异常");
     }
+
     /**
      * 学生文章收藏列表
      * @param studentId
@@ -141,4 +136,5 @@ public class ArticleController {
         List<Article> typeList = typeIdList.stream().map(id ->articleService.getById(id)).collect(Collectors.toList());
         return ResponseBo.ok().put("data", typeList);
     }
+
 }
