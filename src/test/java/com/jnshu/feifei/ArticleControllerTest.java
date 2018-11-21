@@ -15,7 +15,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import static org.junit.Assert.*;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes=SildenafilFrontApplication.class)
 public class ArticleControllerTest {
@@ -31,6 +31,7 @@ public class ArticleControllerTest {
     public void getBannerPageList() throws  Exception{
         mockMvc.perform(MockMvcRequestBuilders.get("/a/u/front/article/banner")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .param("page", "1")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcResultHandlers.print());
@@ -48,14 +49,36 @@ public class ArticleControllerTest {
     }
 
     @Test
-    public void getArticle() {
+    public void getArticle() throws Exception{
+        mockMvc.perform(MockMvcRequestBuilders.get("/a/u/front/article")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .param("articleId", "8")
+                .param("studentId", "80")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
     }
 
     @Test
-    public void articleLike() {
+    public void articleLike() throws Exception{
+        mockMvc.perform(MockMvcRequestBuilders.post("/a/u/front/article/like")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .param("articleId", "8")
+                .param("studentId", "2")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
     }
 
     @Test
-    public void articleCollection() {
+    public void articleCollection() throws Exception{
+        mockMvc.perform(MockMvcRequestBuilders.put("/a/u/front/article/collection")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .param("articleId", "8")
+                .param("studentId", "6")
+                .param("status", "1")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
     }
 }

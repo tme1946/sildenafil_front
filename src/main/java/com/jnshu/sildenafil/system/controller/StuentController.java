@@ -2,8 +2,11 @@ package com.jnshu.sildenafil.system.controller;
 
 import com.jnshu.sildenafil.common.annotation.UseLog;
 import com.jnshu.sildenafil.common.domain.ResponseBo;
+import com.jnshu.sildenafil.system.domain.Article;
 import com.jnshu.sildenafil.system.domain.FrontLog;
 import com.jnshu.sildenafil.system.domain.Student;
+import com.jnshu.sildenafil.system.service.ArticleService;
+import com.jnshu.sildenafil.system.service.CollectionAssetService;
 import com.jnshu.sildenafil.system.service.StudentService;
 import com.jnshu.sildenafil.util.EmailUtil;
 import com.jnshu.sildenafil.util.RedisUtil;
@@ -16,6 +19,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @ProjectName: sildenafil_front
@@ -32,6 +38,10 @@ public class StuentController {
     StudentService studentService;
     @Autowired
     RedisUtil redisUtil;
+    @Autowired
+    private CollectionAssetService collectionAssetService;
+    @Autowired
+    private ArticleService articleService;
     private Long TIME = System.currentTimeMillis();
     /**
      * 验证登陆方法（未使用安全框架设计）            
@@ -145,4 +155,17 @@ public class StuentController {
         return ResponseBo.ok();
     }
 
+    /**
+     * 学生文章收藏列表
+     * @param studentId 学生did
+     * @return  com.jnshu.sildenafil.common.domain.ResponseBo
+     */
+    @UseLog("学生文章收藏列表")
+    @ResponseBody
+    @GetMapping(value = "/a/u/front/article/collection/student")
+    public ResponseBo collectionByStudent(Long studentId) throws Exception{
+        List<Long> typeIdList =collectionAssetService.collectiongListByStudent(0,studentId);
+        List<Article> typeList = typeIdList.stream().map(id ->articleService.getById(id)).collect(Collectors.toList());
+        return ResponseBo.ok().put("data", typeList);
+    }
 }
