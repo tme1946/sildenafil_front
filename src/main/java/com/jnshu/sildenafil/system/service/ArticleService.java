@@ -36,4 +36,18 @@ public interface ArticleService extends IService<Article> {
      * @return 对应文章
      */
     Article getArticleById(Long articleId) throws ServiceException;
+
+    /**前台根据文章id修改文章点赞数
+     * @param articleId 文章id
+     * @throws ServiceException 自定义异常，参数错误
+     * @return 对应文章id
+     */
+    Long updateArticleLikeAmount(Long articleId) throws ServiceException;
+
+    /**前台根据文章id修改文章收藏数
+     * @param articleId 文章id
+     * @throws ServiceException 自定义异常，参数错误
+     * @return 对应文章id
+     */
+    Long updateArticleCollectionAmount(Long articleId) throws ServiceException;
 }
