@@ -27,7 +27,6 @@ public class ArticleController {
     @Autowired
     private CollectionAssetService collectionAssetService;
 
-
     /**前台分页查询banner文章信息
      * @param page 页码
      * @param size 每页数量
@@ -122,6 +121,23 @@ public class ArticleController {
         }
         log.error("结果为null");
         return ResponseBo.error("结果异常");
+    }
+
+    /**
+     * 学生文章收藏列表
+     * @param studentId
+     * @return  com.jnshu.sildenafil.common.domain.ResponseBo
+     */
+    @UseLog("学生文章收藏列表")
+    @ResponseBody
+    @GetMapping(value = "/a/u/front/article/collection/student")
+    public ResponseBo collectionByStudent(Long studentId) throws Exception{
+        if(studentId == null){
+            log.error("args for studentId is null");
+            return ResponseBo.error("studentId is null");}
+        List<Long> typeIdList =collectionAssetService.collectiongListByStudent(0,studentId);
+        List<Article> typeList = typeIdList.stream().map(id ->articleService.getById(id)).collect(Collectors.toList());
+        return ResponseBo.ok().put("data", typeList);
     }
 
 }

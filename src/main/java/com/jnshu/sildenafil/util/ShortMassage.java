@@ -23,9 +23,9 @@ import java.util.ArrayList;
 public class ShortMassage {
     private static final int appid = 1400136173;
     private static final String appkey = "f7343bd28da2ea80b54cf926e03b0a6c";
-    private static final int verifyTemplateId = 185928;
+    private static final int verifyTemplateId = 231571;
     private static final int multiTemplateId = 186352;
-    private static final String smsSign = "GCstudio";
+    private static final String smsSign = "sildenafil";
     /**
      * 发送短信（单个） 
      * [phoneNumbers]

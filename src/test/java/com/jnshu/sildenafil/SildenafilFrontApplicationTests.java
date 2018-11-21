@@ -3,12 +3,14 @@ package com.jnshu.sildenafil;
 import com.jnshu.sildenafil.system.service.CollectionAssetService;
 import com.jnshu.sildenafil.system.service.VideoService;
 import com.jnshu.sildenafil.util.EmailUtil;
+import com.jnshu.sildenafil.util.RedisUtil;
 import com.jnshu.sildenafil.util.ShortMassage;
 import com.jnshu.sildenafil.util.VerifyCode;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
@@ -28,10 +30,14 @@ public class SildenafilFrontApplicationTests {
         }
 
     }
-
+@Autowired
+RedisUtil redisUtil;
     @Test
-    public void videoTest() {
-        String code = VerifyCode.numbers(5);
-        System.out.println(ShortMassage.singleSend("16600264020", code));
+    public void phoneTest() {
+//        RedisTemplate redisTemplate = new RedisTemplate();
+//        Object value = redisTemplate.opsForValue().get("16600264020");
+        Object value = redisUtil.get("16600264020");
+        System.out.println(value);
+        System.out.println(value.equals("60980"));
     }
 }
