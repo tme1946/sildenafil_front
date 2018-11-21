@@ -4,6 +4,7 @@ import com.jnshu.sildenafil.system.bean.WeiXinUser;
 import com.jnshu.sildenafil.system.projectconst.ProjectConst;
 import com.jnshu.sildenafil.system.service.WeiXinUserInfoService;
 import com.jnshu.sildenafil.util.WeiXinUtils;
+import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,7 @@ import java.util.Map;
  * @desc 用于获取微信用户的信息
  **/
 @Service
+@Slf4j
 public class WeiXinUserInfoImpl implements WeiXinUserInfoService {
     /**
      * 获取微信用户的信息
@@ -28,11 +30,13 @@ public class WeiXinUserInfoImpl implements WeiXinUserInfoService {
         WeiXinUser weixinUserInfo = null;
         // 拼接获取用户信息接口的请求地址(如果传入的accessToken是一个全局的token，那么就用GET_WEIXIN_USER_URL这个接口)
         //如果使用的是授权得到的accessToken，那么就用Get_Page_Users_Url这个接口地址（要区分一下）
-        String requestUrl = ProjectConst.Get_Page_Users_Url.replace("ACCESS_TOKEN", accessToken).replace(
-                "OPENID", openId);
+        String requestUrl = ProjectConst.Get_Page_Users_Url
+                .replace("ACCESS_TOKEN", accessToken)
+                .replace("OPENID", openId);
+        log.info("-获取用户信息-请求url:"+requestUrl);
         // 获取用户信息(返回的是Json格式内容)
         JSONObject jsonObject = WeiXinUtils.doGetStr(requestUrl);
-
+        log.info("返回JSON格式用户信息:"+jsonObject);
         if (null != jsonObject) {
             try {
                 //封装获取到的用户信息
@@ -53,11 +57,11 @@ public class WeiXinUserInfoImpl implements WeiXinUserInfoService {
                 weixinUserInfo.setHeadImgUrl(jsonObject.getString("headimgurl"));
             } catch (Exception e) {
                 if (0 == weixinUserInfo.getSubscribe()) {
-                    System.out.println("用户并没有关注本公众号");
+                    log.error("用户并没有关注本公众号");
                 } else {
                     int errorCode = jsonObject.getInt("errcode");
                     String errorMsg = jsonObject.getString("errmsg");
-                    System.out.println("由于"+errorCode +"错误码；错误信息为："+errorMsg+"；导致获取用户信息失败");
+                    log.error("由于"+errorCode +"错误码；错误信息为："+errorMsg+"；导致获取用户信息失败");
                 }
             }
         }
@@ -77,14 +81,20 @@ public class WeiXinUserInfoImpl implements WeiXinUserInfoService {
         //自己的配置APPSECRET;（公众号进行查阅）
         String appsecret = ProjectConst.PROJECT_APPSECRET;
         //拼接用户授权接口信息
-        String requestUrl = ProjectConst.GET_WEBAUTH_URL.replace("APPID", appid).replace("SECRET", appsecret).replace("CODE", code);
+        String requestUrl = ProjectConst.GET_WEBAUTH_URL
+                .replace("APPID", appid)
+                .replace("SECRET", appsecret)
+                .replace("CODE", code);
         //存储获取到的授权字段信息
+//        log.info("*获取微信授权*请求url:"+requestUrl);
         Map<String, String> result = new HashMap<String, String>();
         try {
             JSONObject OpenidJSONO = WeiXinUtils.doGetStr(requestUrl);
             //OpenidJSONO可以得到的内容：access_token expires_in  refresh_token openid scope
             String Openid = String.valueOf(OpenidJSONO.get("openid"));
+//            log.info("你的Openid:"+Openid);
             String AccessToken = String.valueOf(OpenidJSONO.get("access_token"));
+//            log.info("你的AccessToken:"+AccessToken);
             //用户保存的作用域
             String Scope = String.valueOf(OpenidJSONO.get("scope"));
             String refresh_token = String.valueOf(OpenidJSONO.get("refresh_token"));
@@ -108,8 +118,10 @@ public class WeiXinUserInfoImpl implements WeiXinUserInfoService {
     public Map<String , String> getAuthInfo(String code) {
         //进行授权验证，获取到OpenID字段等信息
         Map<String, String> result = oauth2GetOpenid(code);
+//        log.info("你result:"+result);
         // 从这里可以得到用户openid
         String openId = result.get("Openid");
+//        log.info("你openid:"+openId);
 
         return result;
     }

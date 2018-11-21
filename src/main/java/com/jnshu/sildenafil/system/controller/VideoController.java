@@ -47,7 +47,7 @@ public class VideoController {
         log.info("args for getCardVideoPage is : page={}, size={}",page,size);
         IPage iPage = videoService.getPage(page,size,grade,subject);
         if(iPage != null){
-            log.info("result for getCardVideoPage is : iPage={}",iPage);
+//            log.info("result for getCardVideoPage is : iPage={}",iPage);
             return ResponseBo.ok().put("data",iPage);
         }else{
             log.error("result for getCardVideoPage is null");
@@ -66,7 +66,7 @@ public class VideoController {
         log.info("args for getBannerVideoPage is : page={}, size={}",page,size);
         IPage iPage = videoService.getBannerList(page,size);
         if(iPage != null){
-            log.info("result for getBannerVideoPage is : iPage={}",iPage);
+//            log.info("result for getBannerVideoPage is : iPage={}",iPage);
             return ResponseBo.ok().put("data",iPage);
         }else{
             log.error("result for getBannerVideoPage is null");
