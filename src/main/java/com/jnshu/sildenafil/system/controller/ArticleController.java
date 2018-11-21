@@ -127,8 +127,8 @@ public class ArticleController {
 
     /**
      * 学生文章收藏列表
-     * @param studentId
-     * @return  com.jnshu.sildenafil.common.domain.ResponseBo
+     * @param studentId 学生id
+     * @return  返回值
      */
     @UseLog("学生文章收藏列表")
     @ResponseBody
