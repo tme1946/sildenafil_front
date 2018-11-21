@@ -2,12 +2,14 @@ package com.jnshu.sildenafil.system.controller;
 
 import com.jnshu.sildenafil.common.annotation.UseLog;
 import com.jnshu.sildenafil.common.domain.ResponseBo;
+import com.jnshu.sildenafil.system.bean.WeiXinUser;
 import com.jnshu.sildenafil.system.domain.Article;
 import com.jnshu.sildenafil.system.domain.FrontLog;
 import com.jnshu.sildenafil.system.domain.Student;
 import com.jnshu.sildenafil.system.service.ArticleService;
 import com.jnshu.sildenafil.system.service.CollectionAssetService;
 import com.jnshu.sildenafil.system.service.StudentService;
+import com.jnshu.sildenafil.system.service.WeiXinUserInfoService;
 import com.jnshu.sildenafil.util.EmailUtil;
 import com.jnshu.sildenafil.util.RedisUtil;
 import com.jnshu.sildenafil.util.ShortMassage;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -37,30 +40,47 @@ public class StuentController {
     @Autowired
     private StudentService studentService;
     @Autowired
-     private RedisUtil redisUtil;
+    private RedisUtil redisUtil;
     @Autowired
     private CollectionAssetService collectionAssetService;
     @Autowired
     private ArticleService articleService;
-    private Long TIME = System.currentTimeMillis();
+    @Autowired
+    private WeiXinUserInfoService  weiXinService;
     /**
      * 验证登陆方法（未使用安全框架设计）            
-     * @param openId
+     * @param code
      * @return  com.jnshu.sildenafil.common.domain.ResponseBo
      */
+    @UseLog("用户登陆")
     @ResponseBody
     @GetMapping(value = "/a/verify")
-    public ResponseBo login(String openId){
-        if(openId == null){
+    public ResponseBo login(String code){
+        if(code == null){
             log.error("args for openId is null");
             return ResponseBo.error("openId is null"); }
-        log.info("args for loginByOpenId is : openId={}",openId);
+        Map getOpenId = weiXinService.oauth2GetOpenid(code);
+        String openId = (String) getOpenId.get("Openid");
         Student student = studentService.login(openId);
-        if(student.getId() != null){
-            return ResponseBo.error("student not exist");
+        if(student == null){
+            String accessToken = (String)getOpenId.get("AccessToken");
+            WeiXinUser weiXinUser = weiXinService.getUserInfo(accessToken,openId);
+            String veriCode = VerifyCode.numbers(4);
+            String nickname = weiXinUser.getNickname()+"#"+veriCode;
+            String img = weiXinUser.getHeadImgUrl();
+            student.setNickname(nickname);
+            student.setImg(img);
+            student.setCreateAt(System.currentTimeMillis());
+            student.setOpenid(openId);
+            if(studentService.save(student)) {
+                return ResponseBo.ok().put("data", studentService.login(openId));
+            }else {
+                log.error("result for createStudent error");
+                return ResponseBo.error("student create error");
+            }
+        }else {
+            return ResponseBo.ok().put("data", student);
         }
-        log.info("result for loginByStudentId is : studentId={}",student.getId());
-        return ResponseBo.ok().put("student",student);
     }
     /**
      * 修改学生信息
@@ -161,22 +181,12 @@ public class StuentController {
             }
             student.setUpdateAt(System.currentTimeMillis());
             student.setUpdateBy(student.getNickname());
+            Integer bean = student.getBean();
+            bean += 20;
+            student.setBean(bean);
             studentService.updateById(student);
         }
         return ResponseBo.ok();
     }
 
-    /**
-     * 学生文章收藏列表
-     * @param studentId 学生did
-     * @return  com.jnshu.sildenafil.common.domain.ResponseBo
-     */
-    @UseLog("学生文章收藏列表")
-    @ResponseBody
-    @GetMapping(value = "/a/u/front/article/collection/student")
-    public ResponseBo collectionByStudent(Long studentId) throws Exception{
-        List<Long> typeIdList =collectionAssetService.collectiongListByStudent(0,studentId);
-        List<Article> typeList = typeIdList.stream().map(id ->articleService.getById(id)).collect(Collectors.toList());
-        return ResponseBo.ok().put("data", typeList);
-    }
 }
