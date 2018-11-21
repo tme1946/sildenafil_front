@@ -9,7 +9,7 @@ public class ProjectConst {
     /**
      *项目的IP地址，方便以后进行更换
      */
-    public static final String PROJECT_IP = "http://mychat.ngrok.xiaomiqiu.cn";
+    public static final String PROJECT_IP = "http://home.academy.hero.xiuzhenyuan.cn";
     /**
      *项目的Accss_token地址，方便调用其他接口的时候进行使用（这个是动态改变的，所以这个没什么实际作用）
      */
@@ -17,9 +17,10 @@ public class ProjectConst {
 
     /**
      * 微信公众号的APPID和appsecret
+     * 葡萄藤开发号
      */
-    public static final String PROJECT_APPID = "wxe4930bbcd2ea4f37";
-    public static final String PROJECT_APPSECRET = "b401c279f4a07b01721c16eb172391d9";
+    public static final String PROJECT_APPID = "wx2750055a558bbe86";
+    public static final String PROJECT_APPSECRET = "fe33aae20890da44fc14c709468b7a91";
 
     /**
      * 用于获取当前与微信公众号交互的用户信息的接口（一般是用第一个接口地址）
