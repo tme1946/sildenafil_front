@@ -41,47 +41,7 @@ public class StuentController {
     private StudentService studentService;
     @Autowired
     private RedisUtil redisUtil;
-    @Autowired
-    private CollectionAssetService collectionAssetService;
-    @Autowired
-    private ArticleService articleService;
-    @Autowired
-    private WeiXinUserInfoService  weiXinService;
-    /**
-     * 验证登陆方法（未使用安全框架设计）            
-     * @param code
-     * @return  com.jnshu.sildenafil.common.domain.ResponseBo
-     */
-    @UseLog("用户登陆")
-    @ResponseBody
-    @GetMapping(value = "/a/verify")
-    public ResponseBo login(String code){
-        if(code == null){
-            log.error("args for openId is null");
-            return ResponseBo.error("openId is null"); }
-        Map getOpenId = weiXinService.oauth2GetOpenid(code);
-        String openId = (String) getOpenId.get("Openid");
-        Student student = studentService.login(openId);
-        if(student == null){
-            String accessToken = (String)getOpenId.get("AccessToken");
-            WeiXinUser weiXinUser = weiXinService.getUserInfo(accessToken,openId);
-            String veriCode = VerifyCode.numbers(4);
-            String nickname = weiXinUser.getNickname()+"#"+veriCode;
-            String img = weiXinUser.getHeadImgUrl();
-            student.setNickname(nickname);
-            student.setImg(img);
-            student.setCreateAt(System.currentTimeMillis());
-            student.setOpenid(openId);
-            if(studentService.save(student)) {
-                return ResponseBo.ok().put("data", studentService.login(openId));
-            }else {
-                log.error("result for createStudent error");
-                return ResponseBo.error("student create error");
-            }
-        }else {
-            return ResponseBo.ok().put("data", student);
-        }
-    }
+
     /**
      * 修改学生信息
      * @param student
