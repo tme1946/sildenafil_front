@@ -33,7 +33,7 @@ public class WeiXinUserInfoController {
      * 进行网页授权，便于获取到用户的绑定的内容
      *
      * @param session
-     * @param map
+     * @param map 
      * @return
      */
     @UseLog("用户登陆")
