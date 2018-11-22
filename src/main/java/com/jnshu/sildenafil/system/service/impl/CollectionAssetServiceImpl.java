@@ -1,16 +1,11 @@
 package com.jnshu.sildenafil.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-
-import com.jnshu.sildenafil.common.exception.ServiceException;
-
-import com.baomidou.mybatisplus.core.metadata.IPage;
-
+import com.jnshu.sildenafil.common.exception.ParamIsNullException;
 import com.jnshu.sildenafil.system.domain.CollectionAsset;
 import com.jnshu.sildenafil.system.mapper.CollectionAssetDao;
 import com.jnshu.sildenafil.system.service.CollectionAssetService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.jnshu.sildenafil.util.MyPage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,18 +33,20 @@ public class CollectionAssetServiceImpl extends ServiceImpl<CollectionAssetDao, 
         this.collectionAssetDao = collectionAssetDao;
     }
 
-    /**前台对资料进行收藏
-     * @param type 资料类型
-     * @param typeId 资料id
+    /**
+     * 前台对资料进行点赞
+     *
+     * @param type      资料类型
+     * @param typeId    资料id
      * @param studentId 学生id
-     * @return 返回资料id
+     * @return 返回点赞的结果
      */
     @Override
-    public Long insertCollection(Integer type, Long typeId, Long studentId) throws ServiceException{
-        log.info("args for insertCollection is : type={}&typeId={}&studentId={}&",type,typeId,studentId);
-        if(null==type || null==typeId || null==studentId){
-            log.error("result for insertCollection error;args null");
-            throw new ServiceException("insertCollection error;args null");
+    public Long insertCollection(Integer type, Long typeId, Long studentId) throws ParamIsNullException {
+        log.info("args for insertCollection is : type={}&typeId={}&studentId={}&", type, typeId, studentId);
+        if(type==null||typeId==null||studentId==null){
+            log.error("result for insertCollection error;type is null,typeId is null,studentId is null");
+            throw new ParamIsNullException("insertCollection error;args null");
         }
         QueryWrapper<CollectionAsset> collectionAssetQueryWrapper = new QueryWrapper<>();
         collectionAssetQueryWrapper
@@ -63,54 +60,50 @@ public class CollectionAssetServiceImpl extends ServiceImpl<CollectionAssetDao, 
         newColl.setType(type);
         newColl.setTypeId(typeId);
         newColl.setStudentId(studentId);
-        int result = collectionAssetDao.insert(newColl) ;
-        if(result==0){
-            log.warn("result for insertCollection error; insert fail");
-            return null;
-        }
-        log.info("result for insertCollection success; result detail: typeId={}", typeId);
-        return typeId;
+        Long collId = collectionAssetDao.insert(newColl) > 0 ? newColl.getId() : -10000;
+        log.info("result for insertCollection success; result detail: collId={}", collId);
+        return collId;
     }
 
-    /**前台取消资料的收藏状态
+    /**
+     * 前台查询资料的点赞状态
+     *
      * @param type      资料类型
      * @param typeId    资料id
      * @param studentId 学生id
      * @return 返回资料id
      */
     @Override
-    public Long removeCollection(Integer type, Long typeId, Long studentId) throws ServiceException{
+    public Long removeCollection(Integer type, Long typeId, Long studentId) throws ParamIsNullException {
         log.info("args for removeCollection is : type={}&typeId={}&studentId={}&", type, typeId, studentId);
-        if(null==type || null==typeId || null==studentId){
-            log.error("result for removeCollection error;args null");
-            throw new ServiceException("removeCollection error;args null");
+        if(type==null||typeId==null||studentId==null){
+            log.error("result for removeCollection error;type is null,typeId is null,studentId is null");
+            throw new ParamIsNullException("removeCollection error;args null");
         }
         QueryWrapper<CollectionAsset> collectionAssetQueryWrapper = new QueryWrapper<>();
         collectionAssetQueryWrapper
                 .eq("type_id", typeId)
                 .eq("student_id", studentId)
                 .eq("type", type);
-        int result = collectionAssetDao.delete(collectionAssetQueryWrapper);
-        if(result==0){
-            log.warn("result for removeCollection error; delete fail or asset not collection;");
-            return null;
-        }
-        log.info("result for removeCollection success; result detail: typeId={}", typeId);
-        return typeId;
+        Long id = collectionAssetDao.delete(collectionAssetQueryWrapper) > 0 ? typeId : -10000;
+        log.info("result for removeCollection success; result detail: id={}", id);
+        return id;
     }
 
-    /**前台查询资料的收藏状态
-     * @param type 资料类型
-     * @param typeId 资料id
+    /**
+     * 前台查询资料的点赞状态
+     *
+     * @param type      资料类型
+     * @param typeId    资料id
      * @param studentId 学生id
-     * @return 0为未收藏，1为收藏
+     * @return 0为不赞，1为点赞
      */
     @Override
-    public int selectCollection(Integer type, Long typeId, Long studentId) throws ServiceException{
-        log.info("args for selectCollection is : type={}&typeId={}&studentId={}&",type,typeId,studentId);
-        if(null==type || null==typeId || null==studentId){
-            log.error("result for selectCollection error;args null");
-            throw new ServiceException("selectCollection error;args null");
+    public int selectCollection(Integer type, Long typeId, Long studentId) throws ParamIsNullException {
+        log.info("args for selectCollection is : type={}&typeId={}&studentId={}&", type, typeId, studentId);
+        if(type==null||typeId==null||studentId==null){
+            log.error("result for selectCollection error;type is null,typeId is null,studentId is null");
+            throw new ParamIsNullException("selectCollection error;args null");
         }
         QueryWrapper<CollectionAsset> collectionAssetQueryWrapper = new QueryWrapper<>();
         collectionAssetQueryWrapper
@@ -119,22 +112,27 @@ public class CollectionAssetServiceImpl extends ServiceImpl<CollectionAssetDao, 
                 .eq("type", type);
         CollectionAsset collAsset = collectionAssetDao.selectOne(collectionAssetQueryWrapper);
         if (collAsset != null) {
-            log.info("result for selectCollection success:you collected");
+            log.info("you collected");
             return 1;
         } else {
-            log.info("result for selectCollection success:not collect");
+            log.info("not collect");
             return 0;
         }
     }
+
     @Override
-    public List<Long> collectiongListByStudent( Integer type, Long studentId){
+    public List<Long> studentCollection(Integer type, Long studentId) throws ParamIsNullException {
+        log.info("args for studentCollection is : type={}&studentId={}&", type, studentId);
+        if(type==null||studentId==null){
+            log.error("result for studentCollection error;type is null,studentId is null");
+            throw new ParamIsNullException("studentCollection error;args null");
+        }
         QueryWrapper<CollectionAsset> wrapper = new QueryWrapper<>();
-        wrapper.eq("type",type);
-        wrapper.eq("student_id",studentId);
-        wrapper.orderByDesc("create_at");
-        wrapper.select("type_id");
-        List<CollectionAsset> collectionAssetList = collectionAssetDao.selectList(wrapper);
-        List<Long> idList = collectionAssetList.stream().map(CollectionAsset::getTypeId).collect(Collectors.toList());
+        wrapper.eq("student_id", studentId)
+                .eq("type", type)
+                .select("type_id").orderByDesc("update_at");
+        List<CollectionAsset> collectionList =collectionAssetDao.selectList(wrapper);
+        List<Long> idList = collectionList.stream().map(CollectionAsset::getTypeId).collect(Collectors.toList());
         return idList;
     }
 }

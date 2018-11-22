@@ -1,5 +1,6 @@
 package com.jnshu.sildenafil.system.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.jnshu.sildenafil.system.domain.Teacher;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.jnshu.sildenafil.common.exception.ParamIsNullException;
@@ -28,23 +29,16 @@ public interface TeacherService extends IService<Teacher> {
      * 后台通过id查询老师详情
      * @param teacherId 老师id
      * @return 查询到的老师详情
+     * @throws ParamIsNullException 空参
      */
-    Teacher getTeacherById(Long teacherId);
+    Teacher getTeacherById(Long teacherId) throws ParamIsNullException;
 
     /**
-     * 新增老师信息详情
-     * @param teacher 老师
-     * @return 新增后返回的老师详情
-     * @throws ServiceException service错误
-     * @throws ParamIsNullException 参数为空
+     * 根据视频List查询老师List
+     * @param videoPage 视频page
+     * @return 老师List
+     * @throws ParamIsNullException 空餐
      */
-    Teacher saveTeacher(Teacher teacher) throws ServiceException, ParamIsNullException;
-
-    /**
-     * 后台删除老师
-     * @param teacherId 老师id
-     * @return 是否成功删除老师
-     */
-    Boolean removeTeacherById(Long teacherId);
+    List<Teacher> getTeacherListByVideoList(IPage videoPage) throws ParamIsNullException;
 
 }

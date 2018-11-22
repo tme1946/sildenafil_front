@@ -30,11 +30,12 @@ public class LikeAssetServiceImpl extends ServiceImpl<LikeAssetDao, LikeAsset> i
         this.likeAssetDao = likeAssetDao;
     }
 
-     /**前台对资料进行点赞
+    /**
+     * 前台对文章进行点赞
      * @param type 资料类型
      * @param typeId 资料id
      * @param studentId 学生id
-     * @return 返回被点赞的资料id
+     * @return 返回点赞的结果
      */
     @Override
     public Long insertLike(Integer type, Long typeId, Long studentId) throws ParamIsNullException {
@@ -55,16 +56,13 @@ public class LikeAssetServiceImpl extends ServiceImpl<LikeAssetDao, LikeAsset> i
         newLike.setType(type);
         newLike.setTypeId(typeId);
         newLike.setStudentId(studentId);
-        int result = likeAssetDao.insert(newLike) ;
-        if(result==0){
-            log.warn("result for insertLike error; insert fail");
-            return null;
-        }
-        log.info("result for insertLike success; result detail: typeId={}", typeId);
-        return typeId;
+        Long likeId = likeAssetDao.insert(newLike) > 0 ? newLike.getId() : -10000;
+        log.info("result for insertLike success; result detail: likeId={}", likeId);
+        return likeId;
     }
 
-    /**前台查询资料的点赞状态
+    /**
+     * 前台查询资料的点赞状态
      * @param type 资料类型
      * @param typeId 资料id
      * @param studentId 学生id
@@ -72,9 +70,9 @@ public class LikeAssetServiceImpl extends ServiceImpl<LikeAssetDao, LikeAsset> i
      */
     @Override
     public int selectLike(Integer type, Long typeId, Long studentId) throws ParamIsNullException {
-        log.info("args for selectLike is : type={}&typeId={}&studentId={}&",type,typeId,studentId);
+        log.info("args for insertLike is : type={}&typeId={}&studentId={}&",type,typeId,studentId);
         if(type==null||typeId==null||studentId==null){
-            log.error("result for selectLike error;args null");
+            log.error("result for selectLike error;type is null,typeId is null,studentId is null");
             throw new ParamIsNullException("selectLike error;args null");
         }
         QueryWrapper<LikeAsset> likeAssetQueryWrapper = new QueryWrapper<>();
@@ -84,10 +82,10 @@ public class LikeAssetServiceImpl extends ServiceImpl<LikeAssetDao, LikeAsset> i
                 .eq("type", type);
         LikeAsset likeAsset = likeAssetDao.selectOne(likeAssetQueryWrapper);
         if (likeAsset != null) {
-            log.info("result for selectLike success:you liked");
+            log.info("you liked");
             return 1;
         } else {
-            log.info("result for selectLike success:not like");
+            log.info("not like");
             return 0;
         }
     }

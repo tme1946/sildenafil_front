@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.util.HashMap;
+
 import java.util.Map;
 
 /**
@@ -33,7 +33,7 @@ public class WeiXinUserInfoController {
      * 进行网页授权，便于获取到用户的绑定的内容
      *
      * @param session
-     * @param map
+     * @param map 
      * @return
      */
     @UseLog("用户登陆")
@@ -64,7 +64,6 @@ public class WeiXinUserInfoController {
         }
         return ResponseBo.ok().put("data", student);
     }
-
     private Student register(String accessToken, String openId) {
         WeiXinUser userinfo = weiXinService.getUserInfo(accessToken, openId);
         Student student = new Student();
