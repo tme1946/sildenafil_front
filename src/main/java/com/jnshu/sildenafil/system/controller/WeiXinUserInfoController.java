@@ -56,7 +56,7 @@ public class WeiXinUserInfoController {
             }
         }
         map.put("weiXinUser", weiXinUser);
-        return ResponseBo.ok("得到code");
+        return ResponseBo.ok("返回Code：").put("code", code);
     }
     /**
      * 获取用户的openId
