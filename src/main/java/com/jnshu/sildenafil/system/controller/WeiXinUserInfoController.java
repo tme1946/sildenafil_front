@@ -31,7 +31,6 @@ public class WeiXinUserInfoController {
      * @param map
      * @return
      */
-
     @RequestMapping("/a/a/student/{code}")
     public ResponseBo index(@PathVariable String code , HttpSession session, Map<String, Object> map) {
 
