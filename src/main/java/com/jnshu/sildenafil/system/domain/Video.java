@@ -125,6 +125,30 @@ public class Video implements Serializable {
     @TableField("status")
     private Integer status;
 
+    public Video() {
+    }
+
+    public Video(Long id, Long createAt, Long updateAt, String createBy, String updateBy, Long teacherId, String url, String body, Integer type, String cover, Integer grade, Integer subject, String digest, String title, String timeLength, Integer likeAmount, Integer collectionAmount, Integer status) {
+        this.id = id;
+        this.createAt = createAt;
+        this.updateAt = updateAt;
+        this.createBy = createBy;
+        this.updateBy = updateBy;
+        this.teacherId = teacherId;
+        this.url = url;
+        this.body = body;
+        this.type = type;
+        this.cover = cover;
+        this.grade = grade;
+        this.subject = subject;
+        this.digest = digest;
+        this.title = title;
+        this.timeLength = timeLength;
+        this.likeAmount = likeAmount;
+        this.collectionAmount = collectionAmount;
+        this.status = status;
+    }
+
     public Long getId() {
         return id;
     }

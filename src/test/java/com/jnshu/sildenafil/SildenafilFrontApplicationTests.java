@@ -23,8 +23,8 @@ public class SildenafilFrontApplicationTests {
     @Autowired
     CollectionAssetService collectionAssetService;
     @Test
-    public void contextLoads() {
-        List idList = collectionAssetService.collectiongListByStudent(1,1l);
+    public void contextLoads() throws Exception {
+        List idList = collectionAssetService.studentCollection(1,1l);
         for (Object o : idList) {
             System.out.println(o);
         }

@@ -2,7 +2,7 @@ package com.jnshu.sildenafil.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.jnshu.sildenafil.common.exception.ParamIsNullException;
 import com.jnshu.sildenafil.system.domain.*;
 import com.jnshu.sildenafil.system.mapper.CollectionAssetDao;
 import com.jnshu.sildenafil.system.mapper.LikeAssetDao;
@@ -15,8 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -54,8 +52,12 @@ public class VideoServiceImpl extends ServiceImpl<VideoDao, Video> implements Vi
      * @return 分页后的视频List
      */
     @Override
-    public IPage getPage(Integer page, Integer size, Integer grade, Integer subject) {
+    public IPage getPage(Integer page, Integer size, Integer grade, Integer subject) throws ParamIsNullException {
         log.info("args for getPage is: {}", page, size, grade, subject);
+        if (page==null&&size==null) {
+            log.error("result for getPage error;page is null,size is null");
+            throw new ParamIsNullException("getPage error;args null");
+        }
         //调整page和size默认值--
         page= null==page||page<=1 ? 1 : page;
         size= null==size||size<=1||size>20 ? 10 : size;
@@ -85,27 +87,30 @@ public class VideoServiceImpl extends ServiceImpl<VideoDao, Video> implements Vi
      * @return 查询到的视频详情
      */
     @Override
-    public Video getVideoById(Long videoId, Long studentId) {
-        log.info("args for saveVideo is:videoId={}, studentId={}", videoId, studentId);
-        if (videoId != null) {
-            Video video = videoDao.selectById(videoId);
-            log.info("result of getVideoById is: {}", video);
-            return video;
-        } else {
-            log.error("args is null");
-            return null;
+    public Video getVideoById(Long videoId, Long studentId) throws ParamIsNullException{
+        log.info("args for getVideoById is:videoId={}, studentId={}", videoId, studentId);
+        if (videoId==null||studentId==null) {
+            log.error("result for getVideoById error;videoId is null,studentId is null");
+            throw new ParamIsNullException("getVideoById error;args null");
         }
+        Video video = videoDao.selectById(videoId);
+        log.info("result of getVideoById is: {}", video);
+        return video;
     }
 
     /**
-     * 前台增加点赞数PUT
+     * 前台增加点赞数
      * 一个学生id只能给一个视频点一个赞
      * @param videoId 视频id
      * @return 点赞数
      */
     @Override
-    public int updateLikeAmount(Long videoId) {
+    public int updateLikeAmount(Long videoId) throws ParamIsNullException{
         log.info("args for updateLikeAmount is: {}", videoId);
+        if (videoId==null) {
+            log.error("result for updateLikeAmount error;videoId is null");
+            throw new ParamIsNullException("updateLikeAmount error;args null");
+        }
         QueryWrapper<LikeAsset> countQueryWrapper = new QueryWrapper<>();
         countQueryWrapper.eq("type_id", videoId);
         int likeAmount =  likeAssetDao.selectCount(countQueryWrapper);
@@ -118,13 +123,17 @@ public class VideoServiceImpl extends ServiceImpl<VideoDao, Video> implements Vi
     }
 
     /**
-     * 前台增加收藏数PUT
+     * 前台增加收藏数
      * @param videoId 视频id
      * @return 收藏数
      */
     @Override
-    public int updateCollectionAmount(Long videoId) {
+    public int updateCollectionAmount(Long videoId) throws ParamIsNullException{
         log.info("args for updateCollectionAmount is: {}", videoId);
+        if (videoId==null) {
+            log.error("result for updateCollectionAmount error;videoId is null");
+            throw new ParamIsNullException("updateCollectionAmount error;args null");
+        }
         QueryWrapper<CollectionAsset> countQueryWrapper = new QueryWrapper<>();
         countQueryWrapper.eq("type_id", videoId);
         int collectionAmount =  collectionAssetDao.selectCount(countQueryWrapper);
@@ -141,8 +150,12 @@ public class VideoServiceImpl extends ServiceImpl<VideoDao, Video> implements Vi
      * @return Banner视频List
      */
     @Override
-    public IPage getBannerList(Integer page, Integer size) {
+    public IPage getBannerList(Integer page, Integer size) throws ParamIsNullException{
         log.info("args for getFrontPageList is : page={}&size={}",page,size);
+        if (page==null&&size==null) {
+            log.error("result for getBannerList error;page is null,size is null");
+            throw new ParamIsNullException("getBannerList error;args null");
+        }
         //调整page和size默认值--
         page= null==page||page<=1? 1 : page;
         size= null==size||size<=1||size>20 ? 10 : size;

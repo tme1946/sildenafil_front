@@ -1,6 +1,6 @@
 package com.jnshu.sildenafil.system.service;
 
-import com.jnshu.sildenafil.system.bean.WeiXinUser;
+import com.jnshu.sildenafil.system.domain.WeiXinUser;
 
 import java.util.Map;
 
