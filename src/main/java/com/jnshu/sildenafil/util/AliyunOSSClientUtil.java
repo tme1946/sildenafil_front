@@ -222,7 +222,6 @@ public class AliyunOSSClientUtil {
         //上传文件
 //        String files="D:\\image\\1010.jpg,D:\\image\\1111.jpg,D:\\image\\1212.jpg,D:\\image\\1313.jpg,D:\\image\\2222.jpg,D:\\image\\3333.jpg,"
 //                + "D:\\image\\4444.jpg,D:\\image\\5555.jpg,D:\\image\\6666.jpg,D:\\image\\7777.jpg,D:\\image\\8888.jpg";
-
         String file = "C:\\Users\\lihoo\\Desktop\\123.png";
 //        String[] file=files.split(",");
 //        for(String filename:file){
