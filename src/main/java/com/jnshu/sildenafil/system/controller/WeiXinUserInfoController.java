@@ -36,6 +36,7 @@ public class WeiXinUserInfoController {
      * @param map
      * @return
      */
+
     @UseLog("用户登陆")
     @ResponseBody
     @RequestMapping("/a/a/student/{code}")
