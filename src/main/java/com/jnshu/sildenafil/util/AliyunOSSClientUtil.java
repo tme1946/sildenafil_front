@@ -223,16 +223,15 @@ public class AliyunOSSClientUtil {
 //        String files="D:\\image\\1010.jpg,D:\\image\\1111.jpg,D:\\image\\1212.jpg,D:\\image\\1313.jpg,D:\\image\\2222.jpg,D:\\image\\3333.jpg,"
 //                + "D:\\image\\4444.jpg,D:\\image\\5555.jpg,D:\\image\\6666.jpg,D:\\image\\7777.jpg,D:\\image\\8888.jpg";
 
-        String files = "C:\\Users\\lihoo\\Desktop\\123.png";
-        String[] file=files.split(",");
-        for(String filename:file){
+        String file = "C:\\Users\\lihoo\\Desktop\\123.png";
+//        String[] file=files.split(",");
+//        for(String filename:file){
             //System.out.println("filename:"+filename);
-            File filess=new File(filename);
-            String md5key = AliyunOSSClientUtil.uploadObject2OSS(ossClient, filess, BUCKET_NAME, FOLDER);
+            File upfile=new File(file);
+            log.info("查看上传图片格式信息："+ upfile);
+            String md5key = AliyunOSSClientUtil.uploadObject2OSS(ossClient, upfile, BUCKET_NAME, FOLDER);
             log.info("上传后的文件MD5数字唯一签名:" + md5key);
             //上传后的文件MD5数字唯一签名:6CC59E202CD099459E67D6FDB26249C2
-        }
-
-
+//        }
     }
 }

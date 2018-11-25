@@ -2,7 +2,7 @@ package com.jnshu.sildenafil.system.controller;
 
 import com.jnshu.sildenafil.common.annotation.UseLog;
 import com.jnshu.sildenafil.common.domain.ResponseBo;
-import com.jnshu.sildenafil.system.bean.WeiXinUser;
+import com.jnshu.sildenafil.system.domain.WeiXinUser;
 import com.jnshu.sildenafil.system.domain.Student;
 import com.jnshu.sildenafil.system.service.StudentService;
 import com.jnshu.sildenafil.system.service.WeiXinUserInfoService;
@@ -33,7 +33,7 @@ public class WeiXinUserInfoController {
      * 进行网页授权，便于获取到用户的绑定的内容
      *
      * @param session
-     * @param map 
+     * @param map
      * @return
      */
     @UseLog("用户登陆")

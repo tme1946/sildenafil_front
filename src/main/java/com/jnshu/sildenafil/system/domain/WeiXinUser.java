@@ -1,4 +1,4 @@
-package com.jnshu.sildenafil.system.bean;
+package com.jnshu.sildenafil.system.domain;
 
 /**
  * @author lihoo
