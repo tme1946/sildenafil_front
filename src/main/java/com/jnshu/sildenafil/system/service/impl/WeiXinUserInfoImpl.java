@@ -1,6 +1,6 @@
 package com.jnshu.sildenafil.system.service.impl;
 
-import com.jnshu.sildenafil.system.bean.WeiXinUser;
+import com.jnshu.sildenafil.system.domain.WeiXinUser;
 import com.jnshu.sildenafil.system.projectconst.ProjectConst;
 import com.jnshu.sildenafil.system.service.WeiXinUserInfoService;
 import com.jnshu.sildenafil.util.WeiXinUtils;

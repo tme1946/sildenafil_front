@@ -118,4 +118,15 @@ public class SignControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcResultHandlers.print());
     }
+
+    @Test
+    public void img() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/a/image/upload")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .param("img", "C:\\Users\\lihoo\\Desktop\\456.png")
+//                .param("subject","9")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+    }
 }
